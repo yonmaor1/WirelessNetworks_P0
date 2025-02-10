@@ -12,7 +12,12 @@ for line in lines:
         curr_data_index += 1
         data.append([])
         continue
+        
     
+    data_dict = {
+
+    }
+
     data[curr_data_index].append(line)
 
 print(data[0])
