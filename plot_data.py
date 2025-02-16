@@ -1,6 +1,11 @@
 import pandas as pd
-
 import matplotlib.pyplot as plt
+import argparse
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Plot signal strength and data rate.')
+parser.add_argument('-s', '--separate', action='store_true', help='Plot each data frame separately')
+args = parser.parse_args()
 
 # Read the CSV files
 los_df = pd.read_csv('data/yon_los.csv')
@@ -21,34 +26,66 @@ for df in dfs:
 
     df = df[df['Time'] <= 10]
 
-# plot signal strength
-plt.figure(figsize=(10, 6))
-for df, label in zip(dfs, df_labels):
-    # raw data
-    plt.plot(df['Distance'], df['Signal strength (dBm)'], label=label, alpha=0.1)
-    # moving averages
-    df['Moving Average'] = df['Signal strength (dBm)'].rolling(window=100).mean()
-    plt.plot(df['Distance'], df['Moving Average'], label=f'{label} Moving Average', linestyle='--')
+if args.separate:
+    for df, label in zip(dfs, df_labels):
+        # plot signal strength
+        plt.figure(figsize=(10, 6))
+        # raw data
+        plt.plot(df['Distance'], df['Signal strength (dBm)'], label=label, alpha=0.1)
+        # moving averages
+        df['Moving Average'] = df['Signal strength (dBm)'].rolling(window=100).mean()
+        plt.plot(df['Distance'], df['Moving Average'], label=f'{label} Moving Average', linestyle='--')
 
-plt.xlabel('Distance (m)')
-plt.ylabel('Signal Strength (dBm)')
-plt.title('Signal Strength vs Distance')
-plt.legend()
-plt.grid(True)
-plt.show()
+        plt.xlabel('Distance (m)')
+        plt.ylabel('Signal Strength (dBm)')
+        plt.title(f'Signal Strength vs Distance ({label})')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 
-# plot data rate
-plt.figure(figsize=(10, 6))
-for df, label in zip(dfs, df_labels):
-    # raw data
-    plt.plot(df['Distance'], df['Data rate (Mb/s)'], label=label, alpha=0.1)
-    # moving averages
-    df['Data Rate Moving Average'] = df['Data rate (Mb/s)'].rolling(window=100).mean()
-    plt.plot(df['Distance'], df['Data Rate Moving Average'], label=f'{label} Data Rate Moving Average', linestyle='--')
+        # plot data rate
+        plt.figure(figsize=(10, 6))
+        # raw data
+        plt.plot(df['Distance'], df['Data rate (Mb/s)'], label=label, alpha=0.1)
+        # moving averages
+        df['Data Rate Moving Average'] = df['Data rate (Mb/s)'].rolling(window=100).mean()
+        plt.plot(df['Distance'], df['Data Rate Moving Average'], label=f'{label} Data Rate Moving Average', linestyle='--')
 
-plt.xlabel('Distance (m)')
-plt.ylabel('Data Rate (Mb/s)')
-plt.title('Data Rate vs Distance')
-plt.legend()
-plt.grid(True)
-plt.show()
+        plt.xlabel('Distance (m)')
+        plt.ylabel('Data Rate (Mb/s)')
+        plt.title(f'Data Rate vs Distance ({label})')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+else:
+    # plot signal strength
+    plt.figure(figsize=(10, 6))
+    for df, label in zip(dfs, df_labels):
+        # raw data
+        plt.plot(df['Distance'], df['Signal strength (dBm)'], label=label, alpha=0.1)
+        # moving averages
+        df['Moving Average'] = df['Signal strength (dBm)'].rolling(window=100).mean()
+        plt.plot(df['Distance'], df['Moving Average'], label=f'{label} Moving Average', linestyle='--')
+
+    plt.xlabel('Distance (m)')
+    plt.ylabel('Signal Strength (dBm)')
+    plt.title('Signal Strength vs Distance')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # plot data rate
+    plt.figure(figsize=(10, 6))
+    for df, label in zip(dfs, df_labels):
+        # raw data
+        plt.plot(df['Distance'], df['Data rate (Mb/s)'], label=label, alpha=0.1)
+        # moving averages
+        df['Data Rate Moving Average'] = df['Data rate (Mb/s)'].rolling(window=100).mean()
+        plt.plot(df['Distance'], df['Data Rate Moving Average'], label=f'{label} Data Rate Moving Average', linestyle='--')
+
+    plt.xlabel('Distance (m)')
+    plt.ylabel('Data Rate (Mb/s)')
+    plt.title('Data Rate vs Distance')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
