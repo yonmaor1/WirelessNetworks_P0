@@ -61,6 +61,9 @@ else:
     # plot signal strength
     plt.figure(figsize=(10, 6))
     for df, label in zip(dfs, df_labels):
+
+        if label == 'LOS':
+            continue
         # raw data
         plt.plot(df['Distance'], df['Signal strength (dBm)'], label=label, alpha=0.1)
         # moving averages
@@ -77,6 +80,9 @@ else:
     # plot data rate
     plt.figure(figsize=(10, 6))
     for df, label in zip(dfs, df_labels):
+        if label == 'LOS':
+            continue
+        
         # raw data
         plt.plot(df['Distance'], df['Data rate (Mb/s)'], label=label, alpha=0.1)
         # moving averages
