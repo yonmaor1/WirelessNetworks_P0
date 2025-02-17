@@ -5,6 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Plot average signal strength with error bars.')
 parser.add_argument('-s', '--separate', action='store_true', help='Plot each data frame separately')
+parser.add_argument('--los-nlos', action='store_true', help='Plot LOS and NLOS (cardboard) experiments on the same plot')
 args = parser.parse_args()
 
 los_df = pd.read_csv('data/yon_los.csv')
@@ -32,7 +33,28 @@ def calculate_stats(df, start, end):
 
 time_intervals = np.arange(10, 105, 10)
 
-if args.separate:
+if args.los_nlos:
+    los_nlos_dfs = [los_df, nlos_cardboard_df]
+    los_nlos_labels = ['LOS', 'NLOS (cardboard)']
+    
+    plt.figure(figsize=(10, 6))
+    for df, label in zip(los_nlos_dfs, los_nlos_labels):
+        avg_signal_strengths = []
+        std_signal_strengths = []
+        for start in time_intervals:
+            avg, std = calculate_stats(df, start, start + 5)
+            avg_signal_strengths.append(avg)
+            std_signal_strengths.append(std)
+
+        plt.errorbar((time_intervals - 10) / 5 * 0.3, avg_signal_strengths, yerr=std_signal_strengths, label=label, fmt='-o')
+
+    plt.xlabel('Distance (m)')
+    plt.ylabel('Average Signal Strength (dBm)')
+    plt.title('Discrete Signal Strength Measurements (LOS and NLOS (cardboard))')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+elif args.separate:
     for df, label in zip(dfs, df_labels):
         avg_signal_strengths = []
         std_signal_strengths = []
